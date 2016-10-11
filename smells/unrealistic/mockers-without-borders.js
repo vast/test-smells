@@ -1,37 +1,31 @@
 /* Моки без границ
  *
- * Reading this example, some might jump to a preferred rule-of-thumb for when
- * to replace a real dependency with a fake one. Because consistency is
- * paramount, having a rule-of-thumb to follow is better than not, but
- * many popular conventions for mocking are problematic:
+ * Читая пример ниже, вы можете вспомнить свое правило, по которому определяете,
+ * когда использовать фейковые зависимости. Иметь такое правило важно для
+ * консистентности кода. Но многие популярные подходы к мокам проблематичны:
  *
- *   * To those who decide, "only mock things that do I/O", their tests
- *   will provide more refactor safety if the I/O itself is faked (e.g. in-memory
- *   database, tools that intercept network requests), as depending on how the
- *   app is layered, discerning which object or function is ultimately
- *   "responsible" for I/O is too subjective
+ *   * Мокать только те модули, что делают ввод-вывод, — субъективный подход,
+ *   зависящий еще и от архитектуры приложения. Тесты будет легче рефакторить,
+ *   если вместо этого замокать сам ввод-вывод (база данных в памяти,
+ *   перехватывание сетевых запросов).
  *
- *   * To those who say, "only mock unimplemented pieces", their tests will start
- *   to suffer bitrot as soon as those mocked units are actually implemented;
- *   from the perspective of a future reader (where everything is implemented),
- *   the rule of thumb will no longer hold up in the code. Teams can try to
- *   backfill real instances for fake ones as mocked units are implemented, but
- *   this typically requires costly analysis and redesign to the broader test
+ *   * Если мокать только нереализованный функционал, станет тяжело работать
+ *   с тестами по мере реализации. Читателю из будущего (когда все уже
+ *   реализовано) такие тесты не рассказывают, по какому правилу мокать.
  *
- *   * To those who say, "only mock when you really have to", the rule is too
- *   ad hoc to be applied consistently. Moreover, if one is left with no choice
- *   but to fake something out in order to test a bit of functionality, that's
- *   an indictment on the usability of the design of the subject code, which
- *   should be reworked
+ *   * «Мокать только тогда, когда без мока не обойтись» — фривольное
+ *   правило, которому тяжело следовать консистентно. Более того, если
+ *   не получается проверить функциональность без мока, — это приговор
+ *   дизайну тестируемого модуля. Его стоит переработать.
  *
- *   * Our preferred approach is to decide early on if the subject (and its test)
- *   are "collaborators" whose single responsibility is to break down a job by
- *   invoking several dependencies. In that case, the test is of the proper
- *   collaboration and the obvious conclusion is that all the dependencies
- *   should be replaced with test doubles in order to facilitate the test. Such
- *   a test won't tell you the system beneath the subject "works", but rather
- *   that it should be working if the subordinate parts are implemented to
- *   fulfill contract specified by the subject
+ *   * Наш подход — сначала определиться с задачей тестируемого модуля. Если
+ *   его ответственность — разбить задачу на несколько вызовов зависимостей,
+ *   задача теста — проверить взаимодействие между модулем и зависимостями.
+ *   В этом случае все зависимости мокаем, чтобы упростить тест.
+ *
+ *   Такой тест не утверждает, что тестируемый модуль «работает». Тест
+ *   проверяет, что модуль должен работать, если зависимости реализованы
+ *   и соответствуют контракту АПИ.
  *
  */
 
